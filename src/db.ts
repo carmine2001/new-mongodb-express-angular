@@ -1,6 +1,5 @@
 import { config } from "dotenv";
 config();
-
 import mongoose from "mongoose";
 
 const connectionString = process.env.MONGODB_STRING_CONNECTION;
