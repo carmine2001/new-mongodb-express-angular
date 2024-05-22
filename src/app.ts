@@ -1,35 +1,31 @@
-import * as db from "./db";
 import express, {Request,Response} from "express";
 import { config } from "dotenv";
 config();
 import morgan from "morgan";
+import indexRouter from "./routes/index";
+import blogRouter from "./routes/blog";
 
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 const main = async () => {
-    // console.log(await db.addPost("titolo1","carmine","body1",true));
-
-    // console.log(await db.deletePost("664bbe7a3a2ec5673b9f7b82"));
-
-    // console.log(await db.updatePost("664bbed87a651d2458f9fd26","titolo modificato", "alfo", "body modificato", false));
-    
-    
-    // console.log(await db.getPosts());
 
     app.use(morgan("dev"));
 
-    app.get("/posts", async (req:Request, res:Response) => {
-        res.json(await db.getPosts());
+    // middleware che converte in json il body di tutte le richieste che hanno
+    // Content-Type: application/json
+    app.use(express.json());
+
+    app.use("/", indexRouter);
+    app.use("/api/blog", blogRouter);
+
+    app.use((req:Request, res:Response) => {
+        res.status(404).json({message: "errore nel path"});
     })
 
     app.use((req:Request, res:Response) => {
-        res.status(404).json("errore nel path");
-    })
-
-    app.use((req:Request, res:Response) => {
-        res.status(500).json("errore nel server");
+        res.status(500).json({message: "errore nel server"});
     })
 
     app.listen(port,() => {

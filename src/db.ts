@@ -1,22 +1,16 @@
 import { config } from "dotenv";
 config();
-import mongoose from "mongoose";
+import mongoose, { HydratedDocument, InferSchemaType } from "mongoose";
 
 const connectionString = process.env.MONGODB_STRING_CONNECTION;
 
-interface IPost {
-    title: string,
-    author: string,
-    body: string,
-    date: Date,
-    hidden: boolean
-}
+export type IPost = HydratedDocument<InferSchemaType<typeof schemaPost>>;
 
-const schemaPost = new mongoose.Schema<IPost>({
+const schemaPost = new mongoose.Schema({
     title: { type: String, required: true },
     author: { type: String, required: true },
     body: { type: String, required: true },
-    date: { type: Date, defaul: Date.now() },
+    date: { type: Date, default: Date.now },
     hidden: { type: Boolean, default: true }
 });
 
